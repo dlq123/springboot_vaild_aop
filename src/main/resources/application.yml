@@ -1,0 +1,7 @@
+server:
+  port: 8989
+  servlet:
+    context-path: /vaildaop
+spring:
+  application:
+    name: vaildaop
