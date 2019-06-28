@@ -20,15 +20,11 @@ import java.lang.annotation.Target;
 public @interface Validate {
      //是否可以为空
 
-    boolean nullable() default false;
+    boolean notNull() default true;
 
     //自定义正则表达式
 
     RegexTypeEnum regexType() default RegexTypeEnum.NONE;
-
-   //参数或者字段描述,这样能够显示友好的异常信息
-
-    String description() default "";
 
     // RegexType需要参数
     int count() default 0;
