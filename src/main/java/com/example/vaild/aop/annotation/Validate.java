@@ -25,6 +25,7 @@ public @interface Validate {
     //是否为可以""
 
     boolean notBank() default false;
+
     //最大值
     long max() default 0;
 
