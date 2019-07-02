@@ -22,6 +22,18 @@ public @interface Validate {
 
     boolean notNull() default true;
 
+    //最大值
+    long max() default 0;
+
+    //最小值
+    long min() default 0;
+
+    //最大长度
+    long maxLength() default 0;
+
+    //最小长度
+    long minLength() default 0;
+
     //自定义正则表达式
 
     RegexTypeEnum regexType() default RegexTypeEnum.NONE;

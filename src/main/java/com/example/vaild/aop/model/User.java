@@ -19,4 +19,9 @@ public class User {
     private  String  name;
     @Validate(regexType = RegexTypeEnum.IS_CHINESE)
     private  String  password;
+    @Validate(max = 100,min = 10)
+    private  int num;
+
+    @Validate(maxLength = 6,minLength = 3)
+    private String ok;
 }

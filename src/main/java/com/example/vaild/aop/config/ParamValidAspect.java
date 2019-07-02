@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.validation.constraints.Max;
 import javax.xml.bind.ValidationException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -48,7 +49,6 @@ public class ParamValidAspect {
         System.out.println("method: " + method.toString());
         //获得所有参数
         Parameter[] parameters = method.getParameters();
-        System.out.println("parameters: " + parameters.toString());
 
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
@@ -57,7 +57,7 @@ public class ParamValidAspect {
             Field[] fields = clazz.getDeclaredFields();
             //  遍历属性
             System.out.println(args[i].toString());
-            if(fields != null && fields.length > 0){
+            if (fields != null && fields.length > 0) {
                 for (Field field : fields) {
                     // 对于private私有化的成员变量，通过setAccessible来修改器访问权限
                     field.setAccessible(true);
@@ -69,6 +69,7 @@ public class ParamValidAspect {
         }
 
     }
+
     private static void validate(Field field, Object object) throws ValidException {
         String description;
         Object value = null;
@@ -82,7 +83,7 @@ public class ParamValidAspect {
         if (dv == null) {
             return;
         }
-        description = dv.message().equals("") ? field.getName() : dv.description();
+        description = dv.message().equals("") ? field.getName() : dv.message();
         String message = dv.message();
         if (!dv.notNull()) {
             if (value == null || "".equals(value.toString())) {
@@ -91,6 +92,18 @@ public class ParamValidAspect {
         }
 
         if (value != null) {
+            if (Long.valueOf(value.toString()) > dv.max() && dv.max() != 0) {
+                throwException(description, message, RegexErrorEnum.MAX.getDesc()+dv.max());
+            }
+            if (Long.valueOf(value.toString()) < dv.min() && dv.min() != 0) {
+                throwException(description, message, RegexErrorEnum.MIN.getDesc()+dv.min());
+            }
+            if (value.toString().length() > dv.maxLength() && dv.maxLength()!=0){
+                throwException(description, message, RegexErrorEnum.MAX_LENGTH.getDesc()+dv.maxLength());
+            }
+            if (value.toString().length() < dv.maxLength() && dv.minLength()!=0){
+                throwException(description, message, RegexErrorEnum.MIN_LENGTH.getDesc()+dv.minLength());
+            }
             if (dv.regexType() != RegexTypeEnum.NONE) {
                 switch (dv.regexType()) {
                     case NONE:

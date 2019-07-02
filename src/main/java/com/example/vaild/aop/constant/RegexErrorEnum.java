@@ -38,8 +38,25 @@ public enum RegexErrorEnum {
     /**
      * 判断几位小数(正数)
      */
-    IS_DECIMAL("小数位有问题");
+    IS_DECIMAL("小数位有问题"),
 
+    /**
+     * 最大值
+     */
+    MAX("不能超过最大值"),
+    /**
+     * 最小值
+     */
+    MIN("不能低于最小值"),
+
+    /**
+     * 最大长度
+     */
+    MAX_LENGTH("不能超过最大长度"),
+    /**
+     * 最小长度
+     */
+    MIN_LENGTH("不能低于最小长度");
 
     private String desc;
 
