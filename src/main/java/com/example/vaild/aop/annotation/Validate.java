@@ -23,7 +23,6 @@ public @interface Validate {
     boolean notNull() default false;
 
     //是否为可以""
-
     boolean notBank() default false;
 
     //最大值
