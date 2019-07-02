@@ -85,7 +85,7 @@ public class ParamValidAspect {
         }
         description = dv.message().equals("") ? field.getName() : dv.message();
         String message = dv.message();
-        if (!dv.notNull()) {
+        if (dv.notNull()) {
             if (value == null || "".equals(value.toString())) {
                 throw new ValidException(description + RegexErrorEnum.NONE.getDesc());
             }

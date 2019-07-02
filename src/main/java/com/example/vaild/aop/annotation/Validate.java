@@ -18,9 +18,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 public @interface Validate {
-     //是否可以为空
 
-    boolean notNull() default true;
+     //是否可以为空
+    boolean notNull() default false;
 
     //最大值
     long max() default 0;
