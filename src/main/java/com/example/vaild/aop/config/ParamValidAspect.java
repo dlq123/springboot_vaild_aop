@@ -86,24 +86,34 @@ public class ParamValidAspect {
         description = dv.message().equals("") ? field.getName() : dv.message();
         String message = dv.message();
         if (dv.notNull()) {
-            if (value == null || "".equals(value.toString())) {
-                throw new ValidException(description + RegexErrorEnum.NONE.getDesc());
+            if (value == null) {
+                throw new ValidException(description + RegexErrorEnum.NO_NULL.getDesc());
+            }
+        }
+        if(dv.notBank()){
+            if("".equals(value.toString())){
+                throw new ValidException(description + RegexErrorEnum.NO_STRING.getDesc());
             }
         }
 
-        if (value != null) {
-            if (Long.valueOf(value.toString()) > dv.max() && dv.max() != 0) {
-                throwException(description, message, RegexErrorEnum.MAX.getDesc()+dv.max());
+        if (value != null && !"".equals(value.toString())) {
+            if(RegexUtils.isNumber(value.toString())){
+                if (Long.valueOf(value.toString()) > dv.max() && dv.max() != 0) {
+                    throwException(description, message, RegexErrorEnum.MAX.getDesc()+dv.max());
+                }
+                if (Long.valueOf(value.toString()) < dv.min() && dv.min() != 0) {
+                    throwException(description, message, RegexErrorEnum.MIN.getDesc()+dv.min());
+                }
             }
-            if (Long.valueOf(value.toString()) < dv.min() && dv.min() != 0) {
-                throwException(description, message, RegexErrorEnum.MIN.getDesc()+dv.min());
+            if(!RegexUtils.containSpecialChar(value.toString())){
+                if (value.toString().length() > dv.maxLength() && dv.maxLength()!=0){
+                    throwException(description, message, RegexErrorEnum.MAX_LENGTH.getDesc()+dv.maxLength());
+                }
+                if (value.toString().length() < dv.maxLength() && dv.minLength()!=0){
+                    throwException(description, message, RegexErrorEnum.MIN_LENGTH.getDesc()+dv.minLength());
+                }
             }
-            if (value.toString().length() > dv.maxLength() && dv.maxLength()!=0){
-                throwException(description, message, RegexErrorEnum.MAX_LENGTH.getDesc()+dv.maxLength());
-            }
-            if (value.toString().length() < dv.maxLength() && dv.minLength()!=0){
-                throwException(description, message, RegexErrorEnum.MIN_LENGTH.getDesc()+dv.minLength());
-            }
+
             if (dv.regexType() != RegexTypeEnum.NONE) {
                 switch (dv.regexType()) {
                     case NONE:

@@ -22,6 +22,9 @@ public @interface Validate {
      //是否可以为空
     boolean notNull() default false;
 
+    //是否为可以""
+
+    boolean notBank() default false;
     //最大值
     long max() default 0;
 

@@ -7,9 +7,13 @@ package com.example.vaild.aop.constant;
  */
 public enum RegexErrorEnum {
     /**
-     * none
+     * null
      */
-    NONE("不能空"),
+    NO_NULL("不能NULL"),
+    /**
+     * ""
+     */
+    NO_STRING("不能空字符串"),
     /**
      * 特殊字符
      */
