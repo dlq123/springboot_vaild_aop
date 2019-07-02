@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.Max;
 import javax.xml.bind.ValidationException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -35,7 +34,7 @@ public class ParamValidAspect {
     /**
      * 声明切面 应用在，所有controller包下所有的类
      */
-    @Pointcut("execution(* com.example.vaild.aop.controller.*.*(..))")
+    @Pointcut("execution(* cn.cechealth.platform.etl.paas.controller.*.*(..))")
     public void controllerBefore() {
     }
 
@@ -83,34 +82,34 @@ public class ParamValidAspect {
         if (dv == null) {
             return;
         }
-        description = dv.message().equals("") ? field.getName() : dv.message();
+        description = field.getName();
         String message = dv.message();
         if (dv.notNull()) {
             if (value == null) {
                 throw new ValidException(description + RegexErrorEnum.NO_NULL.getDesc());
             }
         }
-        if(dv.notBank()){
-            if("".equals(value.toString())){
+        if (dv.notBank()) {
+            if ("".equals(value.toString())) {
                 throw new ValidException(description + RegexErrorEnum.NO_STRING.getDesc());
             }
         }
 
         if (value != null && !"".equals(value.toString())) {
-            if(RegexUtils.isNumber(value.toString())){
+            if (RegexUtils.isNumber(value.toString())) {
                 if (Long.valueOf(value.toString()) > dv.max() && dv.max() != 0) {
-                    throwException(description, message, RegexErrorEnum.MAX.getDesc()+dv.max());
+                    throwException(description, message, RegexErrorEnum.MAX.getDesc() + dv.max());
                 }
                 if (Long.valueOf(value.toString()) < dv.min() && dv.min() != 0) {
-                    throwException(description, message, RegexErrorEnum.MIN.getDesc()+dv.min());
+                    throwException(description, message, RegexErrorEnum.MIN.getDesc() + dv.min());
                 }
             }
-            if(!RegexUtils.containSpecialChar(value.toString())){
-                if (value.toString().length() > dv.maxLength() && dv.maxLength()!=0){
-                    throwException(description, message, RegexErrorEnum.MAX_LENGTH.getDesc()+dv.maxLength());
+            if (!RegexUtils.containSpecialChar(value.toString())) {
+                if (value.toString().length() > dv.maxLength() && dv.maxLength() != 0) {
+                    throwException(description, message, RegexErrorEnum.MAX_LENGTH.getDesc() + dv.maxLength());
                 }
-                if (value.toString().length() < dv.maxLength() && dv.minLength()!=0){
-                    throwException(description, message, RegexErrorEnum.MIN_LENGTH.getDesc()+dv.minLength());
+                if (value.toString().length() < dv.minLength() && dv.minLength() != 0) {
+                    throwException(description, message, RegexErrorEnum.MIN_LENGTH.getDesc() + dv.minLength());
                 }
             }
 
@@ -162,7 +161,7 @@ public class ParamValidAspect {
 
     public static void throwException(String description, String message, String defaultString) throws ValidException {
         if (!StringUtils.isEmpty(message)) {
-            throw new ValidException(description + message);
+            throw new ValidException(message);
         } else {
             throw new ValidException(description + defaultString);
         }
