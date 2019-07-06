@@ -16,9 +16,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.xml.bind.ValidationException;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * @author dengliqiang
@@ -34,12 +38,12 @@ public class ParamValidAspect {
     /**
      * 声明切面 应用在，所有controller包下所有的类
      */
-    @Pointcut("execution(* cn.cechealth.platform.etl.paas.controller.*.*(..))")
+    @Pointcut("execution(* com.example.vaild.aop.controller.*.*(..))")
     public void controllerBefore() {
     }
 
     @Before("controllerBefore()")
-    public void checkParameter(JoinPoint joinPoint) throws ValidationException {
+    public void checkParameter(JoinPoint joinPoint) throws ValidException, IllegalAccessException {
         //获得切入方法的参数
         Object[] args = joinPoint.getArgs();
         System.out.println("args: " + args.toString());
@@ -60,7 +64,33 @@ public class ParamValidAspect {
                 for (Field field : fields) {
                     // 对于private私有化的成员变量，通过setAccessible来修改器访问权限
                     field.setAccessible(true);
-                    validate(field, args[i]);
+                    if (List.class.isAssignableFrom(field.getType())) {
+                        // 如果是List类型，得到其Generic的类型
+                        Type genericType = field.getGenericType();
+                        if (genericType == null) {
+                            continue;
+                        }
+                        if (genericType instanceof ParameterizedType) {
+                            ParameterizedType pt= (ParameterizedType) genericType;
+                            //在这里已经给到了user
+                            Class<? extends Object> actualClazz = (Class<? extends Object>) pt.getActualTypeArguments()[0];
+                            //获取List中泛型中到字段
+                            Field[] actualField = actualClazz.getDeclaredFields();
+                            System.out.println(actualField);
+                            List<Object> objectList= (List<Object>) field.get(args[i]);
+                            for(Field f:actualField){
+                                f.setAccessible(true);
+                                //todo 报异常--2019-07-05 10:47--传入对象有问题
+                                validate(f, objectList.get(0));
+                                f.setAccessible(false);
+                            }
+                        }
+                    } else if (basicType(field.getType())) {
+
+                        //传入对是对象对字段属性和对象本身
+                        validate(field, args[i]);
+                    }
+
                     // 重新设置会私有权限
                     field.setAccessible(false);
                 }
@@ -69,7 +99,34 @@ public class ParamValidAspect {
 
     }
 
-    private static void validate(Field field, Object object) throws ValidException {
+
+    public static String change(String src) {
+        if (src != null) {
+            StringBuffer sb = new StringBuffer(src);
+            sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+            return sb.toString();
+        } else {
+            return null;
+        }
+    }
+
+    private static boolean basicType(Class<?> clazz) {
+        if (clazz == short.class || clazz == Short.class ||
+                clazz == int.class || clazz == Integer.class ||
+                clazz == long.class || clazz == Long.class ||
+                clazz == char.class || clazz == Character.class ||
+                clazz == float.class || clazz == Float.class ||
+                clazz == double.class || clazz == Double.class ||
+                clazz == boolean.class || clazz == Boolean.class ||
+                clazz == byte.class || clazz == Byte.class ||
+                clazz == String.class) {
+            return true;
+        }
+        return false;
+    }
+
+
+    private static void validate(Field field, Object object) throws ValidException{
         String description;
         Object value = null;
         //获取对象的成员注解

@@ -1,6 +1,7 @@
 package com.example.vaild.aop.controller;
 
 import com.example.vaild.aop.model.User;
+import com.example.vaild.aop.model.UserToList;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,5 +17,10 @@ public class DemoController {
     @PutMapping("test")
     public void test(@RequestBody User user){
         System.out.println(user.toString());
+    }
+
+    @PutMapping("testList")
+    public void testList(@RequestBody UserToList userToList){
+        System.out.println(userToList.toString());
     }
 }
