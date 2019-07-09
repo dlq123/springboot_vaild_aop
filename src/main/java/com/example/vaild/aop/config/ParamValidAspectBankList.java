@@ -110,6 +110,7 @@ public class ParamValidAspectBankList {
             if (genericType == null) {
                 return null;
             }
+            //除去List<String> List<List<Integer>> List<Map<String,String>>等这些类型
             if (genericType instanceof ParameterizedType) {
 
                 ParameterizedType pt= (ParameterizedType) genericType;
