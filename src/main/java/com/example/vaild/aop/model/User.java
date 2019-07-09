@@ -4,6 +4,8 @@ import com.example.vaild.aop.annotation.Validate;
 import com.example.vaild.aop.constant.RegexTypeEnum;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author dengliqiang
  * @dercription:
@@ -24,4 +26,6 @@ public class User {
 
     @Validate(maxLength = 6,minLength = 3)
     private String ok;
+
+    List<Integer> ids;
 }

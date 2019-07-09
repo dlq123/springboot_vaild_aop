@@ -10,16 +10,9 @@ import java.util.List;
  * @dercription:
  * @date 2019-07-04 11:42
  */
-
+@Data
 public class UserToList {
     @Validate
     private  List<User> users;
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
 }
