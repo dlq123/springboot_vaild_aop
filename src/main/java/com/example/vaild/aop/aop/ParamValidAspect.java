@@ -1,4 +1,4 @@
-package com.example.vaild.aop.config;
+package com.example.vaild.aop.aop;
 
 import com.example.vaild.aop.annotation.Validate;
 import com.example.vaild.aop.constant.RegexErrorEnum;
