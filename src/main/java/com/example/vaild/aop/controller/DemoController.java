@@ -27,7 +27,7 @@ public class DemoController {
     }
 
     @PutMapping("testListList")
-    public void testListList(@RequestBody @Validate  UserListList userListList){
+    public void testListList(@RequestBody @Validate   UserListList userListList){
         System.out.println(userListList.toString());
     }
 }
