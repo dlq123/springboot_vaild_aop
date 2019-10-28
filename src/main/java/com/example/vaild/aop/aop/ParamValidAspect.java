@@ -54,6 +54,9 @@ public class ParamValidAspect {
 
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
+            if(parameter.getAnnotation(Validate.class) == null){
+                continue;
+            }
             Class<? extends Object> clazz = parameter.getType();
             // 获取该类型声明的成员
             Field[] fields = clazz.getDeclaredFields();
